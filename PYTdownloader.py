@@ -51,8 +51,8 @@ def download(decoy):
     global dir
     global dirmus
 
-    dir = os.path.dirname(__file__)
-    dirmus = dir + '\\' + mus
+    dir = os.getcwd()
+    dirmus = dir + '/' + mus
 
 
     if not os.path.exists(dirmus):
@@ -123,10 +123,11 @@ def convert(name):
     try:
         clip.audio.write_audiofile(song)
 
-        path1 = dir + '\\' + song
-        path2 = dirmus +'\\'+ song
+        path1 = dir + '/' + song
+        path2 = dirmus +'/'+ song
+        print "paths:",path1,path2
+        os.rename(path1,path2)
 
-        os.remove(path1)
     except:
         try:
             os.remove(path1)
@@ -159,38 +160,36 @@ def convert(name):
 
 
 
-def main():
-    top = Tkinter.Tk()
-    top.geometry('300x210')
-    top.title('YT Downloader')
-    E1 = Tkinter.Entry(top, bd = 5)
-    L1 = Tkinter.Label(top, text="Folder:")
-    error = 0
-    status = "click a button!"
-    global DLamount
-    global CVamount
-    global ERamount
-    DLamount = 0
-    ERamount = 0
-    CVamount = 0
-    b1 = Tkinter.Button(top,text = "scan", command = showamount)
-    b2 = Tkinter.Button(top,text = "download", command = startdownload)
-    text = Tkinter.Label(top,text = status)
-    errortext = Tkinter.Label(top,text = '')
-    converttext = Tkinter.Label(top,text = '')
-    delvid = Tkinter.IntVar()
-    delsong = Tkinter.IntVar()
-    box1 = Tkinter.Checkbutton(top, text="Delete the videos after conversion", variable=delvid)
-    box2 = Tkinter.Checkbutton(top, text="Don't convert into .mp3", variable = delsong)
-    L1.pack()
-    E1.pack()
-    b1.pack()
-    b2.pack()
-    text.pack()
-    converttext.pack()
-    errortext.pack()
-    box1.pack()
-    box2.pack()
-    top.mainloop()
 
-main()
+top = Tkinter.Tk()
+top.geometry('300x210')
+top.title('YT Downloader')
+E1 = Tkinter.Entry(top, bd = 5)
+L1 = Tkinter.Label(top, text="Folder:")
+error = 0
+status = "click a button!"
+global DLamount
+global CVamount
+global ERamount
+DLamount = 0
+ERamount = 0
+CVamount = 0
+b1 = Tkinter.Button(top,text = "scan", command = showamount)
+b2 = Tkinter.Button(top,text = "download", command = startdownload)
+text = Tkinter.Label(top,text = status)
+errortext = Tkinter.Label(top,text = '')
+converttext = Tkinter.Label(top,text = '')
+delvid = Tkinter.IntVar()
+delsong = Tkinter.IntVar()
+box1 = Tkinter.Checkbutton(top, text="Delete the videos after conversion", variable=delvid)
+box2 = Tkinter.Checkbutton(top, text="Don't convert into .mp3", variable = delsong)
+L1.pack()
+E1.pack()
+b1.pack()
+b2.pack()
+text.pack()
+converttext.pack()
+errortext.pack()
+box1.pack()
+box2.pack()
+top.mainloop()
