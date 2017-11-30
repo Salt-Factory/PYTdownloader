@@ -30,12 +30,12 @@ def showamount():
         print 'Videos will be deleted'
     else:
         print "Videos won't be deleted"
-        
+
     if delsong.get() == 1:
         print 'no conversion to .mp3'
     else:
         print 'videos will be converted'
-    
+
 def dl(link):
     yt = YouTube(link)
     name = yt.filename
@@ -43,9 +43,9 @@ def dl(link):
     name += '.mp4'
     return name
 
-      
 
-    
+
+
 def download(decoy):
     mus = E1.get()
     global dir
@@ -57,7 +57,7 @@ def download(decoy):
 
     if not os.path.exists(dirmus):
         os.makedirs(dirmus)
-    
+
     error = 0
     global video
     global DLamount
@@ -77,7 +77,7 @@ def download(decoy):
         name += '.mp4'
 
         try:
-            
+
             print 'downloading!'
             video.download(name)
         except:
@@ -86,47 +86,52 @@ def download(decoy):
             thread.start_new_thread( convert, (name,))
         else:
             continue
-            
+
         DLamount += 1
         DLtext = 'Downloaded ' + str(DLamount) + ' file(s)'
-        text.config(text = DLtext)    
-        
-        
+        text.config(text = DLtext)
+
+
 
 def startdownload():
     decoy = ''
     thread.start_new_thread(download, (decoy,))
-    
+
 def deletevideo(video):
     time.sleep(0.1)
     os.remove(video)
-        
+
 def convert(name):
     global CVamount
     global ERamount
     global dir
     global dirmus
+    print "dir:" + dir
+    print "dirmus:" + dirmus
     import moviepy.editor as mp
-    try:        
+    try:
         clip = mp.VideoFileClip(name)
     except:
         print 'Ascii error!'
         ERamount += 1
-        
+
 
     video = name
     song, fame = name.split('.')
-    
+
     song += '.mp3'
     try:
         clip.audio.write_audiofile(song)
-       
+
         path1 = dir + '\\' + song
         path2 = dirmus +'\\'+ song
-        os.rename(path1, path2)
-       
-    except:
+
         os.remove(path1)
+    except:
+        try:
+            os.remove(path1)
+        except:
+            print path1
         print 'Ascii error!'
 
         errorlist.append(name)
@@ -141,49 +146,51 @@ def convert(name):
 
     thread.exit()
 
-    
-
-
-            
 
 
 
 
 
 
-    
 
 
-    
-top = Tkinter.Tk()
-top.geometry('300x210')
-top.title('YT Downloader')
-E1 = Tkinter.Entry(top, bd = 5)
-L1 = Tkinter.Label(top, text="Folder:")
-error = 0
-status = "click a button!"
-global DLamount
-global CVamount
-global ERamount
-DLamount = 0
-ERamount = 0
-CVamount = 0
-b1 = Tkinter.Button(top,text = "scan", command = showamount) 
-b2 = Tkinter.Button(top,text = "download", command = startdownload)
-text = Tkinter.Label(top,text = status)
-errortext = Tkinter.Label(top,text = '')
-converttext = Tkinter.Label(top,text = '')
-delvid = Tkinter.IntVar()
-delsong = Tkinter.IntVar()
-box1 = Tkinter.Checkbutton(top, text="Delete the videos after conversion", variable=delvid)
-box2 = Tkinter.Checkbutton(top, text="Don't convert into .mp3", variable = delsong)
-L1.pack()
-E1.pack()
-b1.pack()
-b2.pack()
-text.pack()
-converttext.pack()
-errortext.pack()
-box1.pack()
-box2.pack()
-top.mainloop()
+
+
+
+
+
+def main():
+    top = Tkinter.Tk()
+    top.geometry('300x210')
+    top.title('YT Downloader')
+    E1 = Tkinter.Entry(top, bd = 5)
+    L1 = Tkinter.Label(top, text="Folder:")
+    error = 0
+    status = "click a button!"
+    global DLamount
+    global CVamount
+    global ERamount
+    DLamount = 0
+    ERamount = 0
+    CVamount = 0
+    b1 = Tkinter.Button(top,text = "scan", command = showamount)
+    b2 = Tkinter.Button(top,text = "download", command = startdownload)
+    text = Tkinter.Label(top,text = status)
+    errortext = Tkinter.Label(top,text = '')
+    converttext = Tkinter.Label(top,text = '')
+    delvid = Tkinter.IntVar()
+    delsong = Tkinter.IntVar()
+    box1 = Tkinter.Checkbutton(top, text="Delete the videos after conversion", variable=delvid)
+    box2 = Tkinter.Checkbutton(top, text="Don't convert into .mp3", variable = delsong)
+    L1.pack()
+    E1.pack()
+    b1.pack()
+    b2.pack()
+    text.pack()
+    converttext.pack()
+    errortext.pack()
+    box1.pack()
+    box2.pack()
+    top.mainloop()
+
+main()
