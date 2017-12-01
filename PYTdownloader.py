@@ -1,9 +1,9 @@
-from pytube import YouTube
+#TODO: QUITknop, error bij lege folder
+
 import os, sys
 import time
 import Tkinter
 import tkMessageBox
-import moviepy.editor as mp
 import thread
 
 errorlist = []
@@ -26,7 +26,7 @@ def showamount():
     x = amount()
     msg = "you are trying to download " + x + " file(s)"
     text.config(text = msg)
-    if delvid.get() == 1:
+    if delvid.get() == 0:
         print 'Videos will be deleted'
     else:
         print "Videos won't be deleted"
@@ -69,31 +69,34 @@ def download(decoy):
         link = fin.readline()
         link.strip('/n')
         if link == '': break
-        yt = YouTube(link)
 
-        name = yt.filename
-        DLtext = 'Downloading ' + name
-        video = yt.get('mp4','360p')
-        name += '.mp4'
 
         try:
-
+            echo = 'youtube-dl -o "'+E1.get()+'/%(title)s.%(ext)s" -x --audio-format "mp3" '
+            if delvid.get() == 1:
+                echo += "-k "
+            echo += link
+            os.system(echo)
             print 'downloading!'
-            video.download(name)
         except:
             print 'File already downloaded! Continuing with conversion'
-        if delsong.get() == 0:
-            thread.start_new_thread( convert, (name,))
+        if delsong.get() == 0:  #move the mp3 file to the corrent folder
+            return 1
+            #convert(name)
+            #thread.start_new_thread( convert, (name,))
         else:
             continue
 
         DLamount += 1
         DLtext = 'Downloaded ' + str(DLamount) + ' file(s)'
-        text.config(text = DLtext)
+        errortext.config(text = DLtext)
 
 
 
 def startdownload():
+    if E1.get() == "":
+        text.config(text = "Map mag geen lege folder zijn!")
+        return 0;
     decoy = ''
     thread.start_new_thread(download, (decoy,))
 
@@ -101,6 +104,9 @@ def deletevideo(video):
     time.sleep(0.1)
     os.remove(video)
 
+def stop():
+    quit();
+"""
 def convert(name):
     global CVamount
     global ERamount
@@ -146,8 +152,7 @@ def convert(name):
         thread.start_new_thread(deletevideo, (video,))
 
     thread.exit()
-
-
+"""
 
 
 
@@ -174,19 +179,19 @@ global ERamount
 DLamount = 0
 ERamount = 0
 CVamount = 0
-b1 = Tkinter.Button(top,text = "scan", command = showamount)
+b1 = Tkinter.Button(top,text = "quit", command = stop)
 b2 = Tkinter.Button(top,text = "download", command = startdownload)
 text = Tkinter.Label(top,text = status)
 errortext = Tkinter.Label(top,text = '')
 converttext = Tkinter.Label(top,text = '')
 delvid = Tkinter.IntVar()
 delsong = Tkinter.IntVar()
-box1 = Tkinter.Checkbutton(top, text="Delete the videos after conversion", variable=delvid)
+box1 = Tkinter.Checkbutton(top, text="Keep the videos after conversion", variable=delvid)
 box2 = Tkinter.Checkbutton(top, text="Don't convert into .mp3", variable = delsong)
 L1.pack()
 E1.pack()
-b1.pack()
 b2.pack()
+b1.pack()
 text.pack()
 converttext.pack()
 errortext.pack()
