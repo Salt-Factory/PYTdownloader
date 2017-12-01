@@ -5,6 +5,8 @@ import time
 import Tkinter
 import tkMessageBox
 import thread
+import subprocess
+import tempfile
 
 errorlist = []
 print errorlist
@@ -44,7 +46,43 @@ def dl(link):
     return name
 
 
+def downloadplaylist(link):
+    j = readamount(link)
+    i = 0
+    for i in range(j):
+        i += 1
 
+        echo = 'youtube-dl --playlist-items '+str(i)+' -o "'+E1.get()+'/%(title)s.%(ext)s" -x --audio-format "mp3" '
+        if delvid.get() == 1:
+            echo += "-k "
+        echo += link
+        os.system(echo)
+        print 'downloading!'
+
+    if delsong.get() == 0:  #move the mp3 file to the corrent folder
+        return 1
+        #convert(name)
+        #thread.start_new_thread( convert, (name,))
+    else:
+        1;
+
+
+def readamount(link):
+    os.system("youtube-dl --flat-playlist "+link)
+
+
+    with tempfile.TemporaryFile() as tempf:
+        proc = subprocess.Popen(['echo', 'a', 'b'], stdout=tempf)
+        proc.wait()
+        tempf.seek(0)
+        a = tempf.read()
+        print a.find("Downloading")     #Search for amount of vids in playlist
+        #i = 0
+        # while 1:
+        #     i += 1
+        #
+        #     if a.find("of "+str(i)) > 0:
+        #         print i
 
 def download(decoy):
     mus = E1.get()
@@ -70,22 +108,24 @@ def download(decoy):
         link.strip('/n')
         if link == '': break
 
-
-        try:
-            echo = 'youtube-dl -o "'+E1.get()+'/%(title)s.%(ext)s" -x --audio-format "mp3" '
-            if delvid.get() == 1:
-                echo += "-k "
-            echo += link
-            os.system(echo)
-            print 'downloading!'
-        except:
-            print 'File already downloaded! Continuing with conversion'
-        if delsong.get() == 0:  #move the mp3 file to the corrent folder
-            return 1
-            #convert(name)
-            #thread.start_new_thread( convert, (name,))
+        if link.find("playlist") >0 :
+            downloadplaylist(link)
         else:
-            continue
+            try:
+                echo = 'youtube-dl -o "'+E1.get()+'/%(title)s.%(ext)s" -x --audio-format "mp3" '
+                if delvid.get() == 1:
+                    echo += "-k "
+                echo += link
+                os.system(echo)
+                print 'downloading!'
+            except:
+                print 'File already downloaded! Continuing with conversion'
+            if delsong.get() == 0:  #move the mp3 file to the corrent folder
+                return 1
+                #convert(name)
+                #thread.start_new_thread( convert, (name,))
+            else:
+                continue
 
         DLamount += 1
         DLtext = 'Downloaded ' + str(DLamount) + ' file(s)'
@@ -106,65 +146,6 @@ def deletevideo(video):
 
 def stop():
     quit();
-"""
-def convert(name):
-    global CVamount
-    global ERamount
-    global dir
-    global dirmus
-    print "dir:" + dir
-    print "dirmus:" + dirmus
-    import moviepy.editor as mp
-    try:
-        clip = mp.VideoFileClip(name)
-    except:
-        print 'Ascii error!'
-        ERamount += 1
-
-
-    video = name
-    song, fame = name.split('.')
-
-    song += '.mp3'
-    try:
-        clip.audio.write_audiofile(song)
-
-        path1 = dir + '/' + song
-        path2 = dirmus +'/'+ song
-        print "paths:",path1,path2
-        os.rename(path1,path2)
-
-    except:
-        try:
-            os.remove(path1)
-        except:
-            print path1
-        print 'Ascii error!'
-
-        errorlist.append(name)
-    CVamount += 1
-    DLtext = 'Converted ' + str(CVamount) + ' file(s)'
-    converttext.config(text = DLtext)
-    ERtext = 'There are ' + str(ERamount) + ' errors'
-    errortext.config(text = ERtext)
-    decoy = 0
-    if delvid.get() == 1:
-        thread.start_new_thread(deletevideo, (video,))
-
-    thread.exit()
-"""
-
-
-
-
-
-
-
-
-
-
-
-
 
 top = Tkinter.Tk()
 top.geometry('300x210')
